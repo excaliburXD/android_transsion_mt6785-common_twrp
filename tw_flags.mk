@@ -1,0 +1,46 @@
+#build hacks
+ALLOW_MISSING_DEPENDENCIES := true
+BUILD_BROKEN_DUP_RULES := true
+BUILD_BROKEN_USES_BUILD_COPY_HEADERS := true
+BUILD_BROKEN_PREBUILT_ELF_FILES := true
+BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
+BUILD_BROKEN_MISSING_REQUIRED_MODULES := true
+RELAX_USES_LIBRARY_CHECK=true
+
+# TWRP Configuration
+TW_THEME := portrait_hdpi
+TW_EXTRA_LANGUAGES := false
+TW_INPUT_BLACKLIST := "hbtp_vm"
+TW_BRIGHTNESS_PATH := "/sys/class/leds/lcd-backlight/brightness"
+TW_DEFAULT_BRIGHTNESS := 1200
+TW_MAX_BRIGHTNESS := 1500
+TW_USE_TOOLBOX := true
+TW_USE_EXTERNAL_STORAGE := true
+TW_EXCLUDE_DEFAULT_USB_INIT := true
+TW_EXCLUDE_TWRPAPP := true
+TW_EXCLUDE_APEX := true
+TW_NO_SCREEN_BLANK := true
+TW_NO_LEGACY_PROPS := true
+TW_NO_FASTBOOT_BOOT := true
+TW_FRAMERATE := 90
+
+# Maintainer
+BOARD_MAINTAINER_NAME := excaliburXD
+TW_DEVICE_VERSION := $(BOARD_MAINTAINER_NAME)
+OF_MAINTAINER := $(BOARD_MAINTAINER_NAME)
+PB_MAIN_VERSION := $(BOARD_MAINTAINER_NAME)
+
+# resetprop & repacktools
+TW_INCLUDE_RESETPROP := true
+TW_INCLUDE_REPACKTOOLS := true
+TW_INCLUDE_LIBRESETPROP := true
+TW_INCLUDE_FASTBOOTD := true
+TW_INCLUDE_NTFS_3G := true
+
+# Debugging
+TWRP_EVENT_LOGGING := true
+TWRP_INCLUDE_LOGCAT := true
+TARGET_USES_LOGD := true
+
+# Kernel module
+TW_LOAD_VENDOR_MODULES := "kheaders.ko bt_drv.ko wmt_drv.ko fmradio_drv.ko gps_drv.ko wmt_chrdev_wifi.ko wlan_drv_gen4m.ko fpsgo.ko met.ko udc_lib.ko"
