@@ -1,11 +1,14 @@
-#build hacks
+# Build Hacks
 ALLOW_MISSING_DEPENDENCIES := true
 BUILD_BROKEN_DUP_RULES := true
-BUILD_BROKEN_USES_BUILD_COPY_HEADERS := true
-BUILD_BROKEN_PREBUILT_ELF_FILES := true
 BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
 BUILD_BROKEN_MISSING_REQUIRED_MODULES := true
-RELAX_USES_LIBRARY_CHECK=true
+
+# Crypto
+TW_INCLUDE_CRYPTO := true
+TW_INCLUDE_CRYPTO_FBE := true
+TW_INCLUDE_FBE_METADATA_DECRYPT := true
+TW_PREPARE_DATA_MEDIA_EARLY := true
 
 # TWRP Configuration
 TW_THEME := portrait_hdpi
@@ -22,7 +25,7 @@ TW_EXCLUDE_APEX := true
 TW_NO_SCREEN_BLANK := true
 TW_NO_LEGACY_PROPS := true
 TW_NO_FASTBOOT_BOOT := true
-TW_FRAMERATE := 90
+TW_FRAMERATE := 60
 
 # Maintainer
 BOARD_MAINTAINER_NAME := excaliburXD
@@ -41,6 +44,12 @@ TW_INCLUDE_NTFS_3G := true
 TWRP_EVENT_LOGGING := true
 TWRP_INCLUDE_LOGCAT := true
 TARGET_USES_LOGD := true
+
+# StatusBar
+TW_STATUS_ICONS_ALIGN := center
+TW_CUSTOM_CPU_POS := "245"
+TW_CUSTOM_CLOCK_POS := "70"
+TW_CUSTOM_BATTERY_POS := "790"
 
 # Kernel module
 TW_LOAD_VENDOR_MODULES := "kheaders.ko bt_drv.ko wmt_drv.ko fmradio_drv.ko gps_drv.ko wmt_chrdev_wifi.ko wlan_drv_gen4m.ko fpsgo.ko met.ko udc_lib.ko"
