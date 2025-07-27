@@ -5,14 +5,13 @@ export FOX_RECOVERY_BOOT_PARTITION="/dev/block/platform/bootdevice/by-name/boot"
 export FOX_RECOVERY_SYSTEM_PARTITION="/dev/block/mapper/by-name/system"
 export FOX_RECOVERY_VENDOR_PARTITION="/dev/block/mapper/by-name/vendor"
     
-# Device AB Setup
+# Device Partition Setup
 export FOX_AB_DEVICE=1
 export FOX_VIRTUAL_AB_DEVICE=1
 
 # Build Optimizations
 export FOX_DELETE_AROMAFM=1
 export FOX_REMOVE_AAPT=1
-export FOX_DELETE_MAGISK_ADDON=1
 
 # Feature Support
 export FOX_ENABLE_APP_MANAGER=1
@@ -20,7 +19,6 @@ export FOX_USE_BASH_SHELL=1
 export FOX_USE_NANO_EDITOR=1
 export FOX_USE_TAR_BINARY=1
 export FOX_USE_XZ_UTILS=1
-export FOX_USE_DATA_RECOVERY_FOR_SETTINGS=1
 
 # Build Metadata
 export FOX_BUILD_TYPE="Stable"
@@ -30,7 +28,6 @@ export OF_MAINTAINER="excaliburXD"
 
 # AVB & Treble
 export OF_PATCH_AVB20=1
-export OF_SUPPORT_VBMETA_AVB2_PATCHING=1
 export OF_NO_TREBLE_COMPATIBILITY_CHECK=1
 
 # UI & Hardware Features
@@ -45,8 +42,6 @@ export OF_DISABLE_FORCED_ENCRYPTION=1
 export OF_DISABLE_DM_VERITY_FORCED_ENCRYPTION=1
 export OF_USE_MAGISKBOOT=1
 export OF_USE_MAGISKBOOT_FOR_ALL_PATCHES=1
-export OF_DEFAULT_KEYMASTER_VERSION=4.0
-export OF_LOOP_DEVICE_ERRORS_TO_LOG=1
 
 # Advanced Functions
 export OF_ENABLE_LPTOOLS=1
