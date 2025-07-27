@@ -1,14 +1,17 @@
 # A/B
 AB_OTA_UPDATER := true
 AB_OTA_PARTITIONS += \
-    vbmeta \
-    vbmeta_system \
-    dtbo \
     boot \
+    dtbo \
+    lk \
+    preloader \
+    product \
     system \
     system_ext \
-    vendor \
-    product
+    vbmeta \
+    vbmeta_system \
+    vbmeta_vendor \
+    vendor
 
 # Partitions
 BOARD_FLASH_BLOCK_SIZE := 131072 
@@ -18,6 +21,7 @@ BOARD_SUPPRESS_SECURE_ERASE := true
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
 BOARD_BUILD_SYSTEM_ROOT_IMAGE := false
+BOARD_ROOT_EXTRA_FOLDERS += metadata
 BOARD_USES_METADATA_PARTITION := true
 
 # Fstype
@@ -34,9 +38,11 @@ TARGET_COPY_OUT_SYSTEM_EXT := system_ext
 TARGET_COPY_OUT_SYSTEM := system
 
 # SUPER
-BOARD_SUPER_PARTITION_SIZE := 9126805504 
-BOARD_SUPER_PARTITION_GROUPS := infinix_dynamic_partitions
-BOARD_INFINIX_DYNAMIC_PARTITIONS_PARTITION_LIST := system system_ext vendor product
-BOARD_INFINIX_DYNAMIC_PARTITIONS_SIZE := 9122611200 
-
-
+BOARD_SUPER_PARTITION_SIZE := 9126805504
+BOARD_SUPER_PARTITION_GROUPS := main
+BOARD_MAIN_SIZE := 9122611200
+BOARD_MAIN_PARTITION_LIST := \
+      system \
+      system_ext \
+      vendor \
+      product
