@@ -1,9 +1,7 @@
 import /init.microtrust.rc
 
 on init
-    # Create a more standard /dev/block layout for our scripts
-    symlink /dev/block/platform/bootdevice /dev/block/bootdevice
-    export LD_LIBRARY_PATH /system/lib64:/system/lib64/hw:/vendor/lib64:/vendor/lib64/hw
+    export LD_LIBRARY_PATH /system/lib64:/vendor/lib64:/vendor/lib64/hw
 
     # USB Configuration
     setprop sys.usb.configfs 1
@@ -18,15 +16,13 @@ on fs
     install_keyring
     setprop crypto.ready 1
 
-    # Start core services
-    start hwservicemanager
-    start servicemanager
-
 on fs && property:ro.debuggable=0
     write /sys/class/udc/musb-hdrc/device/cmode 2
     start adbd
 
 on post-fs
+    start boot-hal-1-1
+    
     # Support A/B feature for EMMC and UFS boot region
     symlink /dev/block/sda /dev/block/mmcblk0boot0
     symlink /dev/block/sdb /dev/block/mmcblk0boot1
@@ -45,14 +41,14 @@ on post-fs
     symlink /dev/block/platform/bootdevice/by-name/preloader_a /dev/block/by-name/preloader_ufs_a
     symlink /dev/block/platform/bootdevice/by-name/preloader_b /dev/block/by-name/preloader_ufs_b
 
+    # Create a more standard /dev/block layout for our scripts
+    symlink /dev/block/platform/bootdevice /dev/block/bootdevice
+
     exec u:r:update_engine:s0 root root -- /system/bin/mtk_plpath_utils
     start mtk.plpath.utils.link
-
-service hidl_memory /system/bin/android.hidl.allocator@1.0-service
-    user root
-    group root
-    disabled
-    seclabel u:r:recovery:s0
+    start hwservicemanager
+    start servicemanager
+    start teei_daemon
 
 service hwservicemanager /system/bin/hwservicemanager
     user root
@@ -80,7 +76,7 @@ service keystore /system/bin/keystore /tmp/misc/keystore
     disabled
     seclabel u:r:recovery:s0
 
-service gatekeeper-1-0 /vendor/bin/hw/android.hardware.gatekeeper@1.0-service
+service vendor.gatekeeper-1-0 /vendor/bin/hw/android.hardware.gatekeeper@1.0-service
     interface android.hardware.gatekeeper@1.0::IGatekeeper default
     class hal
     user root
@@ -88,7 +84,7 @@ service gatekeeper-1-0 /vendor/bin/hw/android.hardware.gatekeeper@1.0-service
     disabled
     seclabel u:r:recovery:s0
 
-service keymaster-4-0 /vendor/bin/hw/android.hardware.keymaster@4.0-service.beanpod
+service vendor.keymaster-4-0-beanpod /vendor/bin/hw/android.hardware.keymaster@4.0-service.beanpod
     interface android.hardware.keymaster@4.0::IKeymasterDevice default
     interface android.hardware.keymaster@4.1::IKeymasterDevice default
     class early_hal
@@ -97,46 +93,53 @@ service keymaster-4-0 /vendor/bin/hw/android.hardware.keymaster@4.0-service.bean
     disabled
     seclabel u:r:recovery:s0
 
-service mtk.plpath.utils /system/bin/mtk_plpath_utils
-    class main
+service wait_for_keymaster /system/bin/wait_for_keymaster
     user root
-    group root system
+    group root
     oneshot
     disabled
     seclabel u:r:recovery:s0
 
+on property:ro.crypto.state=encrypted && property:ro.crypto.type=file
+    start wait_for_keymaster
+    start vendor.keymaster-4-0-beanpod
+    start vendor.gatekeeper-1-0
+    start teei_daemon
+    
 on property:hwservicemanager.ready=true
-    start keymaster-4-0
-    start gatekeeper-1-0
+    start wait_for_keymaster
+    start vendor.keymaster-4-0-beanpod
+    start vendor.gatekeeper-1-0
 
 on property:crypto.ready=1
-    start keymaster-4-0
+    start vendor.keymaster-4-0-beanpod
 
 on property:vendor.sys.listener.registered=true
-    start gatekeeper-1-0
-    start keymaster-4-0
+    start vendor.gatekeeper-1-0
+    start vendor.keymaster-4-0-beanpod
+    start wait_for_keymaster
 
 on property:ro.crypto.state=unsupported
     stop teei_daemon
-    stop keymaster-4-0
-    stop gatekeeper-1-0
+    stop vendor.keymaster-4-0-beanpod
+    stop vendor.gatekeeper-1-0
     stop servicemanager
     stop hwservicemanager
 
 on property:ro.crypto.state=unencrypted
     stop teei_daemon
-    stop keymaster-4-0
-    stop gatekeeper-1-0
+    stop vendor.keymaster-4-0-beanpod
+    stop vendor.gatekeeper-1-0
     stop servicemanager
     stop hwservicemanager
 
 on property:twrp.decrypt.done=true
     stop teei_daemon
-    stop keymaster-4-0
-    stop gatekeeper-1-0
+    stop vendor.keymaster-4-0-beanpod
+    stop vendor.gatekeeper-1-0
     stop servicemanager
     stop hwservicemanager
 
 on boot
     start boot-hal-1-1
-    start health-hal-2-1
+    start health-hal-2
