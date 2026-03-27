@@ -1,0 +1,1 @@
+# Common custom recovery device tree for Transsion mt6785 devices
