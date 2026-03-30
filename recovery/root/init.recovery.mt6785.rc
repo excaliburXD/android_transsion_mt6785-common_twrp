@@ -143,3 +143,8 @@ on property:twrp.decrypt.done=true
 on boot
     start boot-hal-1-1
     start health-hal-2
+
+on post-fs-data
+    mkdir /data/media 0770 media_rw media_rw
+    mkdir /data/media/0 0770 media_rw media_rw
+    symlink /data/media/0 /sdcard
