@@ -65,15 +65,19 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # API
 PRODUCT_SHIPPING_API_LEVEL := 30
-PRODUCT_TARGET_VNDK_VERSION := 
+PRODUCT_TARGET_VNDK_VERSION := 30
 
-# Boot control HAL
 PRODUCT_PACKAGES += \
-    android.hardware.boot@1.1-mtkimpl \
-    android.hardware.boot@1.1-mtkimpl.recovery
+    android.hardware.boot@1.1-impl \
+    android.hardware.boot@1.1-impl.recovery \
+    android.hardware.boot@1.1-impl-service
 
 PRODUCT_PACKAGES_DEBUG += \
     bootctl
+
+PRODUCT_PACKAGES += \
+    bootctrl.mt6785 \
+    bootctrl.mt6785.recovery
 
 # Health HAL
 PRODUCT_PACKAGES += \
@@ -90,10 +94,6 @@ PRODUCT_PACKAGES += \
     mtk_plpath_utils \
     mtk_plpath_utils.recovery
 
-# Keymaster
-PRODUCT_PACKAGES += \
-    android.hardware.keymaster@4.0
-
 # Update engine
 PRODUCT_PACKAGES += \
     update_engine \
@@ -105,13 +105,9 @@ PRODUCT_PACKAGES_DEBUG += \
 
 # Additional Configs
 TARGET_RECOVERY_DEVICE_MODULES += \
-    android.hardware.keymaster@4.0 \
     libkeymaster4 \
-    libpuresoftkeymasterdevice \
-    libhardware_legacy
+    libpuresoftkeymasterdevice
 
 RECOVERY_LIBRARY_SOURCE_FILES += \
-    $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.keymaster@4.0 \
     $(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster4.so \
-    $(TARGET_OUT_SHARED_LIBRARIES)/libpuresoftkeymasterdevice.so \
-    $(TARGET_OUT_SHARED_LIBRARIES)/libhardware_legacy.so
+    $(TARGET_OUT_SHARED_LIBRARIES)/libpuresoftkeymasterdevice.so
