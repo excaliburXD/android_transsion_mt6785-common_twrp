@@ -120,5 +120,6 @@ on boot
     start boot-hal-1-1
     start health-hal-2-1
 
+    # mount persist partitions
     mkdir /mnt/vendor/persist 0771 root root
     mount ext4 /dev/block/platform/bootdevice/by-name/persist /mnt/vendor/persist
