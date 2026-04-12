@@ -13,7 +13,6 @@
 # Firmware
 /dtbo                     emmc     /dev/block/platform/bootdevice/by-name/dtbo                     flags=display="dtbo";slotselect;backup;flashimg
 /metadata                 ext4     /dev/block/platform/bootdevice/by-name/md_udc                   flags=display="Metadata";backup
-/data                     f2fs     /dev/block/platform/bootdevice/by-name/userdata                 flags=fileencryption=aes-256-xts:aes-256-cts:v2,keydirectory=/metadata/vold/metadata_encryption
 /misc                     emmc     /dev/block/platform/bootdevice/by-name/misc                     flags=display="Misc";backup
 
 # Sensitive Data
