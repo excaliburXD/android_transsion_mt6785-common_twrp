@@ -28,3 +28,18 @@ ro.postinstall.fstab.prefix=/system
 
 # USB
 ro.sys.usb.storage.type=mtp
+
+# [FIX] Stock-compatible properties needed for normal boot
+# These properties match the stock firmware's default.prop values.
+# Without them, the system partition's init may fail or behave incorrectly
+# because it expects certain properties to be set by the ramdisk.
+ro.sf.lcd_density=480
+ro.oem_unlock_supported=1
+ro.zygote=zygote64_32
+ro.bionic.arch=arm64
+ro.bionic.cpu_variant=cortex-a53
+ro.bionic.2nd_arch=arm
+ro.bionic.2nd_cpu_variant=cortex-a53
+
+# [FIX] Vendor RC path - stock uses /vendor/etc/init/hw/ for vendor init scripts
+ro.vendor.rc=/vendor/etc/init/hw/

@@ -8,3 +8,19 @@ ro.vendor.mtk_emmc_support=1
 vendor.usb.use_ffs_mtp=1
 persist.vendor.mtk.pl_lnk=1
 init.userspace_reboot.is_supported=true
+
+# [FIX] Stock vendor properties needed for normal boot compatibility.
+# The stock firmware's system partition expects these vendor properties to be
+# available at boot time. Missing properties cause vendor HAL services to fail,
+# which cascades into SystemServer crash and no homescreen.
+ro.frp.pst=/dev/block/platform/bootdevice/by-name/frp
+ro.vendor.build.security_patch=2127-12-31
+ro.vendor.mtk_sec_video_path_support=1
+ro.vendor.mtk_data_config=1
+drm.service.enabled=true
+ro.vendor.mtk_widevine_drm_l1_support=1
+ro.vendor.mtk_perf_simple_start_win=1
+ro.vendor.mtk_perf_fast_start_win=1
+ro.vendor.mtk_perf_response_time=1
+ro.surface_flinger.primary_display_orientation=ORIENTATION_0
+debug.sf.disable_backpressure=1
