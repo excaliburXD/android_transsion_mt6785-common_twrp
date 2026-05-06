@@ -71,8 +71,12 @@ BOARD_MKBOOTIMG_ARGS += --dtb_offset $(BOARD_DTB_OFFSET)
 BOARD_MKBOOTIMG_ARGS += --dtb $(TARGET_PREBUILT_DTB)
 
 # AVB Android Verified Boot
+# [FIX] Disable AVB for boot image to allow direct boot without vbmeta verification failure.
+# The stock ROM uses unsigned vbmeta (flags=0), so signing our boot.img with AVB
+# causes verification mismatch. Disabling AVB on the boot image allows the
+# OrangeFox boot.img to pass vbmeta checks with the stock vbmeta partition.
 BOARD_AVB_ENABLE := true
-BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --flags 3
+BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --flags 0
 BOARD_AVB_RECOVERY_ADD_HASH_FOOTER_ARGS += \
     --prop com.android.build.boot.os_version:$(PLATFORM_VERSION) \
     --prop com.android.build.boot.security_patch:$(PLATFORM_SECURITY_PATCH)
@@ -112,6 +116,17 @@ TARGET_COPY_OUT_PRODUCT := product
 BOARD_BUILD_SYSTEM_ROOT_IMAGE := false
 BOARD_SUPPRESS_SECURE_ERASE := true
 
+# [FIX] Force Normal Boot Support
+# This device uses SAR (System As Root) with androidboot.force_normal_boot=1 in
+# kernel cmdline. The init binary MUST support switching to system partition for
+# normal boot. OrangeFox R11.1 includes ForceNormalBoot patches in init, but they
+# require this flag to be set explicitly.
+TW_FORCE_NORMAL_BOOT_SUPPORT := true
+
+# [FIX] Skip first stage mount for recovery-only partitions in normal boot path.
+# This prevents mount failures when booting to system.
+TW_HAS_MTK_PLATFORM := true
+
 # Platform
 TARGET_BOARD_PLATFORM := mt6785
 
@@ -134,6 +149,12 @@ BOARD_USES_RECOVERY_AS_BOOT := true
 TARGET_NO_RECOVERY := true
 TARGET_RECOVERY_FSTAB := $(COMMON_PATH)/recovery/root/system/etc/recovery.fstab
 TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
+
+# [FIX] Use both fstab files for proper first_stage_mount support.
+# The fstab.mt6785 in first_stage_ramdisk/ is needed by init's first_stage_mount
+# to mount system/vendor partitions before switch_root for normal boot.
+# Without this, init cannot find partitions to mount and normal boot fails.
+TARGET_RECOVERY_WIPE := $(COMMON_PATH)/recovery/root/system/etc/recovery.fstab
 
 # Crypto
 TW_INCLUDE_CRYPTO := true

@@ -6,10 +6,25 @@
 #
 
 # Inherit from those products. Most specific first.
-$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit_only.mk)
+# [FIX] Use core_64_bit (not core_64_bit_only) so ro.zygote=zygote64_32
+# Stock firmware uses zygote64_32 because device supports both 32-bit and 64-bit apps.
+# core_64_bit_only sets ro.zygote=zygote64 which breaks 32-bit app compatibility.
+$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/base.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/emulated_storage.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/gsi_keys.mk)
+
+# [FIX] Override default product properties for normal boot compatibility.
+# OrangeFox/TWRP build sets ro.secure=0, ro.debuggable=1, ro.zygote=zygote64
+# which are incompatible with the user build system partition.
+# These overrides ensure the ramdisk properties match what the system partition expects.
+PRODUCT_PRODUCT_PROPERTIES += \
+    ro.zygote=zygote64_32 \
+    ro.secure=1 \
+    ro.debuggable=0 \
+    ro.adb.secure=1 \
+    persist.sys.usb.config=none \
+    ro.allow.mock.location=0
 
 # Virtual A/B
 ENABLE_VIRTUAL_AB := true
