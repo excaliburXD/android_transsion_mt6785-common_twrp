@@ -42,6 +42,18 @@ BOARD_HAS_MTK_HARDWARE := true
 AB_OTA_UPDATER := true
 
 # Kernel
+# NOTE: BOARD_KERNEL_CMDLINE only contains the *base* cmdline that mkbootimg
+# writes into the boot image header. The TWRP/OrangeFox build system appends
+# additional flags at packaging time:
+#   - `twrpfastboot=1` (TWRP-specific — forces recovery-variant init to skip
+#     first_stage_mount even when androidboot.force_normal_boot=1 is set)
+#   - `buildvariant=eng` (from TARGET_BUILD_VARIANT=eng, default for TWRP)
+#
+# The `twrpfastboot=1` flag CANNOT be removed from BOARD_KERNEL_CMDLINE because
+# it is not added here. To strip it from the final boot image, the device tree
+# CI workflows include a 'Patch TWRP BoardConfig' step that removes this flag
+# from vendor/twrp/BoardConfigTWRP.mk at build time (see .github/workflows/
+# in the device tree repository).
 BOARD_KERNEL_CMDLINE := bootopt=64S3,32N2,64N2
 BOARD_KERNEL_CMDLINE += androidboot.force_normal_boot=1
 BOARD_KERNEL_CMDLINE += androidboot.boot_device=bootdevice
@@ -117,10 +129,18 @@ BOARD_BUILD_SYSTEM_ROOT_IMAGE := false
 BOARD_SUPPRESS_SECURE_ERASE := true
 
 # [FIX] Force Normal Boot Support
-# This device uses SAR (System As Root) with androidboot.force_normal_boot=1 in
-# kernel cmdline. The init binary MUST support switching to system partition for
-# normal boot. OrangeFox R11.1 includes ForceNormalBoot patches in init, but they
-# require this flag to be set explicitly.
+# NOTE: This flag alone is INSUFFICIENT to enable direct boot to system.
+# The actual blocker is the `twrpfastboot=1` flag that TWRP build system
+# injects into the boot image header cmdline at packaging time (NOT in
+# BOARD_KERNEL_CMDLINE). That flag causes the recovery-variant init binary
+# to always take the "recovery mode" branch, skipping first_stage_mount.
+#
+# To actually fix direct boot to homescreen, the device tree CI workflows
+# patch vendor/twrp/BoardConfigTWRP.mk at build time to strip the
+# `twrpfastboot=1` flag (see .github/workflows/ in the device tree).
+#
+# This flag remains necessary (it tells TWRP build that the device supports
+# force_normal_boot), but it is no longer presented as the standalone fix.
 TW_FORCE_NORMAL_BOOT_SUPPORT := true
 
 # [FIX] Skip first stage mount for recovery-only partitions in normal boot path.
