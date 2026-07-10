@@ -41,22 +41,7 @@ BOARD_HAS_MTK_HARDWARE := true
 # AB
 AB_OTA_UPDATER := true
 
-# Kernel
-# NOTE: BOARD_KERNEL_CMDLINE only contains the *base* cmdline that mkbootimg
-# writes into the boot image header. The TWRP/OrangeFox build system appends
-# additional flags at packaging time:
-#   - `twrpfastboot=1` (TWRP-specific — forces recovery-variant init to skip
-#     first_stage_mount even when androidboot.force_normal_boot=1 is set)
-#   - `buildvariant=eng` (from TARGET_BUILD_VARIANT=eng, default for TWRP)
-#
-# The `twrpfastboot=1` flag CANNOT be removed from BOARD_KERNEL_CMDLINE because
-# it is not added here. To strip it from the final boot image, the device tree
-# CI workflows include a 'Patch TWRP BoardConfig' step that removes this flag
-# from vendor/twrp/BoardConfigTWRP.mk at build time (see .github/workflows/
-# in the device tree repository).
 BOARD_KERNEL_CMDLINE := bootopt=64S3,32N2,64N2
-BOARD_KERNEL_CMDLINE += androidboot.force_normal_boot=1
-BOARD_KERNEL_CMDLINE += androidboot.boot_device=bootdevice
 BOARD_BOOTIMG_HEADER_VERSION := 2
 BOARD_KERNEL_PAGESIZE := 2048
 BOARD_KERNEL_BASE := 0x40078000
@@ -69,7 +54,7 @@ BOARD_DTB_OFFSET := 0x0bc08000
 # Prebuilt kernel 4.14.186-g3f7f4bc83b0d-dirty
 BOARD_KERNEL_IMAGE_NAME := kernel
 TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilt/kernel
-TARGET_PREBUILT_DTB := $(DEVICE_PATH)/prebuilt/dtb.img
+TARGET_PREBUILT_DTB := $(DEVICE_PATH)/prebuilt/dtb
 TARGET_FORCE_PREBUILT_KERNEL := true
 
 # MKBOOTIMG-ARGS
@@ -83,10 +68,6 @@ BOARD_MKBOOTIMG_ARGS += --dtb_offset $(BOARD_DTB_OFFSET)
 BOARD_MKBOOTIMG_ARGS += --dtb $(TARGET_PREBUILT_DTB)
 
 # AVB Android Verified Boot
-# [FIX] Disable AVB for boot image to allow direct boot without vbmeta verification failure.
-# The stock ROM uses unsigned vbmeta (flags=0), so signing our boot.img with AVB
-# causes verification mismatch. Disabling AVB on the boot image allows the
-# OrangeFox boot.img to pass vbmeta checks with the stock vbmeta partition.
 BOARD_AVB_ENABLE := true
 BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --flags 0
 BOARD_AVB_RECOVERY_ADD_HASH_FOOTER_ARGS += \
@@ -95,17 +76,13 @@ BOARD_AVB_RECOVERY_ADD_HASH_FOOTER_ARGS += \
 
 # Partitions
 BOARD_FLASH_BLOCK_SIZE := 131072
-BOARD_BOOTIMAGE_PARTITION_SIZE := 33554432
+BOARD_BOOTIMAGE_PARTITION_SIZE := 33554432 # (32mb)
 BOARD_USES_METADATA_PARTITION := true
 BOARD_ROOT_EXTRA_FOLDERS += metadata
 BOARD_SUPER_PARTITION_SIZE := 8663334912
-BOARD_SUPER_PARTITION_GROUPS := main
-BOARD_MAIN_SIZE := 8659103744
-BOARD_MAIN_PARTITION_LIST := \
-      system \
-      system_ext \
-      vendor \
-      product
+BOARD_SUPER_PARTITION_GROUPS := infinix_dynamic_partitions
+BOARD_INFINIX_DYNAMIC_PARTITIONS_SIZE := 8659103744
+BOARD_INFINIX_DYNAMIC_PARTITIONS_PARTITION_LIST := system vendor product system_ext
 
 # Userdata
 BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := f2fs
@@ -127,25 +104,6 @@ TARGET_COPY_OUT_PRODUCT := product
 # System As Root
 BOARD_BUILD_SYSTEM_ROOT_IMAGE := false
 BOARD_SUPPRESS_SECURE_ERASE := true
-
-# [FIX] Force Normal Boot Support
-# NOTE: This flag alone is INSUFFICIENT to enable direct boot to system.
-# The actual blocker is the `twrpfastboot=1` flag that TWRP build system
-# injects into the boot image header cmdline at packaging time (NOT in
-# BOARD_KERNEL_CMDLINE). That flag causes the recovery-variant init binary
-# to always take the "recovery mode" branch, skipping first_stage_mount.
-#
-# To actually fix direct boot to homescreen, the device tree CI workflows
-# patch vendor/twrp/BoardConfigTWRP.mk at build time to strip the
-# `twrpfastboot=1` flag (see .github/workflows/ in the device tree).
-#
-# This flag remains necessary (it tells TWRP build that the device supports
-# force_normal_boot), but it is no longer presented as the standalone fix.
-TW_FORCE_NORMAL_BOOT_SUPPORT := true
-
-# [FIX] Skip first stage mount for recovery-only partitions in normal boot path.
-# This prevents mount failures when booting to system.
-TW_HAS_MTK_PLATFORM := true
 
 # Platform
 TARGET_BOARD_PLATFORM := mt6785
@@ -169,12 +127,6 @@ BOARD_USES_RECOVERY_AS_BOOT := true
 TARGET_NO_RECOVERY := true
 TARGET_RECOVERY_FSTAB := $(COMMON_PATH)/recovery/root/system/etc/recovery.fstab
 TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
-
-# [FIX] Use both fstab files for proper first_stage_mount support.
-# The fstab.mt6785 in first_stage_ramdisk/ is needed by init's first_stage_mount
-# to mount system/vendor partitions before switch_root for normal boot.
-# Without this, init cannot find partitions to mount and normal boot fails.
-TARGET_RECOVERY_WIPE := $(COMMON_PATH)/recovery/root/system/etc/recovery.fstab
 
 # Crypto
 TW_INCLUDE_CRYPTO := true
