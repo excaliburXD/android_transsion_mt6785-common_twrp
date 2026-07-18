@@ -13,11 +13,13 @@
 # Firmware
 /dtbo                     emmc     /dev/block/platform/bootdevice/by-name/dtbo                     flags=display="dtbo";slotselect;backup;flashimg
 /metadata                 ext4     /dev/block/platform/bootdevice/by-name/md_udc                   flags=display="Metadata";backup
+/data                     f2fs     /dev/block/platform/bootdevice/by-name/userdata                 flags=fileencryption=aes-256-xts:aes-256-cts:v2+inlinecrypt_optimized,keydirectory=/metadata/vold/metadata_encryption,fsverity
 /misc                     emmc     /dev/block/platform/bootdevice/by-name/misc                     flags=display="Misc";backup
 
 # Sensitive Data
 /nvcfg                    ext4     /dev/block/platform/bootdevice/by-name/nvcfg                    flags=display="Nvcfg";slotselect;backup;flashimg
-/persist_image            emmc     /dev/block/platform/bootdevice/by-name/persist                  flags=display="Persist";slotselect;backup;flashimg
+/persist                  ext4     /dev/block/platform/bootdevice/by-name/persist                  flags=backup=1;display="Persist";mounttodecrypt;fsflags=ro 
+/persist_image            emmc     /dev/block/platform/bootdevice/by-name/persist                  flags=display="Persist_Image";slotselect;backup;flashimg
 /persistent               emmc     /dev/block/platform/bootdevice/by-name/frp                      flags=display="Persistent";slotselect;backup;flashimg
 
 # IMEI and modem related
@@ -41,10 +43,12 @@
 /usb_otg                  vfat     /dev/block/sda1 /dev/block/sda /dev/block/sdd1                  flags=display="USB-OTG";storage;wipeingui;removable;backup=0
 
 # Super Partitions (dynamic partitions backup + flash individual logical volumes)
-/system                   ext4     /dev/block/mapper/system                                        flags=display="System";slotselect;backup;flashimg;logical
-/system_ext               ext4     /dev/block/mapper/system_ext                                    flags=display="System Ext";slotselect;backup;flashimg;logical
-/vendor                   ext4     /dev/block/mapper/vendor                                        flags=display="Vendor";slotselect;backup;flashimg;logical
-/product                  ext4     /dev/block/mapper/product                                       flags=display="Product";slotselect;backup;flashimg;logical
+/system                   ext4     /dev/block/mapper/system                                        flags=backup=1;wipeingui;slotselect;logical;display="System_root"
+/system_ext               ext4     /dev/block/mapper/system_ext                                    flags=backup=1;wipeingui;logical;display="System_ext_a";slotselect
+/vendor                   ext4     /dev/block/mapper/vendor                                        flags=backup=1;wipeingui;logical;display="Vendor_a";slotselect
+/product                  ext4     /dev/block/mapper/product                                       flags=backup=1;wipeingui;logical;display="Product_a";slotselect
 
-# Allow Flash GSI Image
-/system_image             emmc     /dev/block/mapper/system_a                                      flags=slotselect
+/system_image             emmc     /dev/block/mapper/system_a                                      flags=backup=1;flashimg=1;slotselect;logical;display="System Image_a"
+/system_ext_image         emmc     /dev/block/mapper/system_ext_a                                  flags=backup=1;flashimg=1;slotselect;logical;display="System_ext Image_a"
+/vendor_image             emmc     /dev/block/mapper/vendor_a                                      flags=backup=1;flashimg=1;slotselect;logical;display="Vendor Image_a"
+/product_image            emmc     /dev/block/mapper/product_a                                     flags=backup=1;flashimg=1;slotselect;logical;display="Product Image_a"
