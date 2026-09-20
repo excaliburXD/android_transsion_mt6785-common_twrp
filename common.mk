@@ -95,5 +95,5 @@ TARGET_RECOVERY_DEVICE_MODULES += \
     libpuresoftkeymasterdevice
 
 RECOVERY_LIBRARY_SOURCE_FILES += \
-    $(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster4.so
+    $(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster4.so \
     $(TARGET_OUT_SHARED_LIBRARIES)/libpuresoftkeymasterdevice.so
