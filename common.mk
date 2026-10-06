@@ -51,7 +51,7 @@ PRODUCT_BUILD_SUPER_PARTITION := true
 
 # API
 PRODUCT_SHIPPING_API_LEVEL := 30
-PRODUCT_TARGET_VNDK_VERSION := 30
+PRODUCT_TARGET_VNDK_VERSION :=
 
 PRODUCT_PACKAGES += \
     android.hardware.boot@1.1-mtkimpl \
@@ -92,12 +92,8 @@ PRODUCT_PACKAGES_DEBUG += \
 # Additional Configs
 TARGET_RECOVERY_DEVICE_MODULES += \
     libkeymaster4 \
-    libkmsetkey \
-    libhardware_legacy \
     libpuresoftkeymasterdevice
 
 RECOVERY_LIBRARY_SOURCE_FILES += \
     $(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster4.so \
-    $(TARGET_OUT_SHARED_LIBRARIES)/libkmsetkey.so \
-    $(TARGET_OUT_SHARED_LIBRARIES)/libhardware_legacy.so \
     $(TARGET_OUT_SHARED_LIBRARIES)/libpuresoftkeymasterdevice.so
