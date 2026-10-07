@@ -160,6 +160,8 @@ TW_EXCLUDE_TWRPAPP := true
 
 # TWRP Configuration
 TW_THEME := portrait_hdpi
+TARGET_SCREEN_WIDTH := 1080
+TARGET_SCREEN_HEIGHT := 2460
 TW_DEFAULT_LANGUAGE := en
 TW_EXTRA_LANGUAGES := false
 TW_BRIGHTNESS_PATH := "/sys/class/leds/lcd-backlight/brightness"
