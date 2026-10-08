@@ -183,7 +183,6 @@ TW_USE_MODEL_HARDWARE_ID_FOR_DEVICE_ID := true
 
 # Other Config
 TARGET_USE_CUSTOM_LUN_FILE_PATH := /config/usb_gadget/g1/functions/mass_storage.usb0/lun.%d/file
-TARGET_SCREEN_HEIGHT := 2460
 TARGET_USES_LOGD := true
 TWRP_INCLUDE_LOGCAT := true
 
