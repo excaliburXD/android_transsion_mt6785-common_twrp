@@ -18,8 +18,7 @@
 
 # Sensitive Data
 /nvcfg                    ext4     /dev/block/platform/bootdevice/by-name/nvcfg                    flags=display="Nvcfg";slotselect;backup;flashimg
-/persist                  ext4     /dev/block/platform/bootdevice/by-name/persist                  flags=backup=1;display="Persist";mounttodecrypt;fsflags=ro 
-/persist_image            emmc     /dev/block/platform/bootdevice/by-name/persist                  flags=display="Persist_Image";slotselect;backup;flashimg
+/persist_image            emmc     /dev/block/platform/bootdevice/by-name/persist                  flags=display="Persist Image";slotselect;backup;flashimg
 /persistent               emmc     /dev/block/platform/bootdevice/by-name/frp                      flags=display="Persistent";slotselect;backup;flashimg
 
 # IMEI and modem related
