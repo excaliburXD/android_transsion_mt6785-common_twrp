@@ -43,12 +43,12 @@
 /usb_otg                  vfat     /dev/block/sda1 /dev/block/sda /dev/block/sdd1                  flags=display="USB-OTG";storage;wipeingui;removable;backup=0
 
 # Super Partitions (dynamic partitions backup + flash individual logical volumes)
-/system                   ext4     /dev/block/mapper/system                                        flags=backup=1;wipeingui;slotselect;logical;display="System_root"
-/system_ext               ext4     /dev/block/mapper/system_ext                                    flags=backup=1;wipeingui;logical;display="System_ext_a";slotselect
-/vendor                   ext4     /dev/block/mapper/vendor                                        flags=backup=1;wipeingui;logical;display="Vendor_a";slotselect
-/product                  ext4     /dev/block/mapper/product                                       flags=backup=1;wipeingui;logical;display="Product_a";slotselect
+/system                   ext4     /dev/block/mapper/system                                        flags=display="System";slotselect;backup=0;logical
+/system_ext               ext4     /dev/block/mapper/system_ext                                    flags=display="System_ext";slotselect;backup=0;logical
+/vendor                   ext4     /dev/block/mapper/vendor                                        flags=display="Vendor";slotselect;backup=0;logical
+/product                  ext4     /dev/block/mapper/product                                       flags=display="Product";slotselect;backup=0;logical
 
-/system_image             emmc     /dev/block/mapper/system_a                                      flags=backup=1;flashimg=1;slotselect;logical;display="System Image_a"
-/system_ext_image         emmc     /dev/block/mapper/system_ext_a                                  flags=backup=1;flashimg=1;slotselect;logical;display="System_ext Image_a"
-/vendor_image             emmc     /dev/block/mapper/vendor_a                                      flags=backup=1;flashimg=1;slotselect;logical;display="Vendor Image_a"
-/product_image            emmc     /dev/block/mapper/product_a                                     flags=backup=1;flashimg=1;slotselect;logical;display="Product Image_a"
+/system_image             emmc     /dev/block/mapper/system_a                                      flags=display="System Image";slotselect;backup=1;flashimg
+/system_ext_image         emmc     /dev/block/mapper/system_ext_a                                  flags=display="System Ext Image";slotselect;backup=1;flashimg
+/vendor_image             emmc     /dev/block/mapper/vendor_a                                      flags=display="Vendor Image";slotselect;backup=1;flashimg
+/product_image            emmc     /dev/block/mapper/product_a                                     flags=display="Product Image";slotselect;backup=1;flashimg
