@@ -12,7 +12,7 @@
 
 # Firmware
 /dtbo                     emmc     /dev/block/platform/bootdevice/by-name/dtbo                     flags=display="dtbo";slotselect;backup;flashimg
-/metadata                 ext4     /dev/block/platform/bootdevice/by-name/md_udc                   flags=display="Metadata";backup
+#/metadata                 ext4     /dev/block/platform/bootdevice/by-name/md_udc                   flags=display="Metadata";backup
 /misc                     emmc     /dev/block/platform/bootdevice/by-name/misc                     flags=display="Misc";backup
 
 # Sensitive Data
@@ -40,13 +40,5 @@
 /external_sd              vfat     /dev/block/mmcblk0p1 /dev/block/mmcblk0 /dev/block/mmcblk1p1    flags=display="Micro SD Card";storage;wipeingui;removable;backup=0
 /usb_otg                  vfat     /dev/block/sda1 /dev/block/sda /dev/block/sdd1                  flags=display="USB-OTG";storage;wipeingui;removable;backup=0
 
-# Super Partitions (dynamic partitions backup + flash individual logical volumes)
-/system                   ext4     /dev/block/mapper/system                                        flags=display="System";slotselect;backup=0;logical
-/system_ext               ext4     /dev/block/mapper/system_ext                                    flags=display="System_ext";slotselect;backup=0;logical
-/vendor                   ext4     /dev/block/mapper/vendor                                        flags=display="Vendor";slotselect;backup=0;logical
-/product                  ext4     /dev/block/mapper/product                                       flags=display="Product";slotselect;backup=0;logical
-
-/system_image             emmc     /dev/block/mapper/system_a                                      flags=display="System Image";slotselect;backup=1;flashimg
-/system_ext_image         emmc     /dev/block/mapper/system_ext_a                                  flags=display="System Ext Image";slotselect;backup=1;flashimg
-/vendor_image             emmc     /dev/block/mapper/vendor_a                                      flags=display="Vendor Image";slotselect;backup=1;flashimg
-/product_image            emmc     /dev/block/mapper/product_a                                     flags=display="Product Image";slotselect;backup=1;flashimg
+# Allow Flash GSI Image
+/system_image             emmc     /dev/block/mapper/system_a                                      flags=slotselect
